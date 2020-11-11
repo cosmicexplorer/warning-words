@@ -1,34 +1,40 @@
 ;;; setup syntax highlighting for keywords i care about
+
+
+(require 'cl-lib)
 (require 'rx)
-;; (cl-defun rx-parse-constituent (k v  &key (from rx-constituents) (mut nil))
-;;   (let* ((cur-val (alist-get k from))
-;;          (to-match (if mut cur-val v)))
-;;     (cl-assert (not (xor mut cur-val)))
-;;     (msg-evals (v cur-val to-match))
-;;     (pcase-exhaustive to-match
-;;       ((or (and (pred stringp) defn)
-;;            (and (pred symbolp)
-;;                 (app
-;;                  (lambda (x) (rx-parse-constituent
-;;                               x to-match :from from :mut t))
-;;                  defn))
-;;            (and `(,(and (pred functionp))
-;;                   ,(and (or `nil (and (pred integerp) (pred (<= 0)))) min-args)
-;;                   ,(and (or `nil (and (pred integerp)
-;;                                       (or (and (guard (integerp min-args))
-;;                                                (pred (<= min-args)))
-;;                                           (guard (null min-args)))))
-;;                         (app (message "f2: %s") s))
-;;                   ,(and (app (message "f3: %s") s) (or `nil (pred functionp)) (app (message "f4: %s") s)))
-;;                 defn))
-;;        (msg-evals (defn))
-;;        t)
-;;       (_ nil))))
+
+
+(cl-defun rx-parse-constituent (k v  &key (from rx-constituents) (mut nil))
+  (let* ((cur-val (alist-get k from))
+         (to-match (if mut cur-val v)))
+    (cl-assert (not (xor mut cur-val)))
+    (msg-evals (v cur-val to-match))
+    (pcase-exhaustive to-match
+      ((or (and (pred stringp) defn)
+           (and (pred symbolp)
+                (app
+                 (lambda (x) (rx-parse-constituent
+                              x to-match :from from :mut t))
+                 defn))
+           (and `(,(and (pred functionp))
+                  ,(and (or `nil (and (pred integerp) (pred (<= 0)))) min-args)
+                  ,(and (or `nil (and (pred integerp)
+                                      (or (and (guard (integerp min-args))
+                                               (pred (<= min-args)))
+                                          (guard (null min-args)))))
+                        (app (message "f2: %s") s))
+                  ,(and (app (message "f3: %s") s) (or `nil (pred functionp)) (app (message "f4: %s") s)))
+                defn))
+       (msg-evals (defn))
+       t)
+      (_ nil))))
 
 ;; (alist-get 'and rx-constituents)
 
 ;; (alist-get 'word-suffix rx-constituents)
 
+
 (defconst warning-highlights-regexp
   (rx
    (: bow
@@ -98,6 +104,7 @@
   "Turn off warning-highlights-mode."
   (font-lock-remove-keywords nil `(,@warning-highlights-keywords)))
 
+
 ;;;###autoload
 (define-minor-mode warning-highlights-mode
   "Highlight words of warning."
