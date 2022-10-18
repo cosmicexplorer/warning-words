@@ -120,12 +120,4 @@
   (if pfx (helm-multi-swoop-all warning-highlights-regexp)
     (helm-swoop :query warning-highlights-regexp)))
 
-;;;###autoload
-(defun find-warnings-in-dir (dir)
-  (interactive "Mdirectory: ")
-  (when (or current-prefix-arg (string-equal dir "")) (setq dir "."))
-  (grep (concat init-home-folder-dir "switch-grep.sh" " -E "
-                "\"(^|[^a-zA-Z])(" warning-words-grep-regex
-                ")([^a-zA-Z]|$)\" \"" dir "\"")))
-
 (provide 'warning-words)
