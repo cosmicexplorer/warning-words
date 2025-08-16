@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;;; setup syntax highlighting for keywords i care about
 
 
